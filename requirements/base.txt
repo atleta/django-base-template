@@ -1,0 +1,1 @@
+# Common base requirements shared by all environments

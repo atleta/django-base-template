@@ -16,6 +16,17 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(_('email address'), unique=True, db_index=True)
 
+#    username = models.CharField(_('username'), max_length=30, unique=True,
+#                                help_text=_(
+#                                    'Required. 30 characters or fewer. Letters, numbers and '
+#                                    '@/./+/-/_ characters'),
+#                                validators=[
+#                                    validators.RegexValidator(re.compile('^[\w.@+-]+$'),
+#                                                              _('Enter a valid username.'),
+#                                                              'invalid')
+#                                ])
+
+
     first_name = models.CharField(_('first name'), max_length=30)
     last_name = models.CharField(_('last name'), max_length=30)
     is_staff = models.BooleanField(_('staff status'), default=False,
@@ -34,6 +45,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+#    REQUIRED_FIELDS = ['username']
 
     def get_absolute_url(self):
         return "/users/%s/" % urlquote(self.username)

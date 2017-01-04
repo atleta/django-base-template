@@ -2,4 +2,4 @@
 
 -r base.txt
 
-django-debug-toolbar
+gunicorn==19.4.5

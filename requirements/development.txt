@@ -1,2 +1,26 @@
 # Development requirements
 -r base.txt
+
+piprot
+django-debug-toolbar==1.6
+django-extensions==1.7.5
+ipython
+#Markdown==2.6.6
+pip-tools==1.8.0
+Werkzeug==0.11.15
+certifi==2016.9.26
+ecdsa==0.13
+Fabric==1.13.1
+paramiko==2.1.1
+pycrypto==2.6.1
+formic==0.9beta8
+# Needed during build/deployment
+Jinja2==2.8.1
+coloredlogs==5.2
+django-nose==1.4.4
+nose==1.3.7
+factory_boy==2.8.1
+sure==1.4.0
+mock==2.0.0
+nose-parameterized==0.5.0
+yanc

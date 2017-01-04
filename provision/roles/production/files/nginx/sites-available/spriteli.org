@@ -1,0 +1,89 @@
+##
+# You should look at the following URL's in order to grasp a solid understanding
+# of Nginx configuration files in order to fully unleash the power of Nginx.
+# http://wiki.nginx.org/Pitfalls
+# http://wiki.nginx.org/QuickStart
+# http://wiki.nginx.org/Configuration
+#
+
+upstream app_server {
+    # Optionally use unix domain sockets (need to set up gunicorn!)
+    # server unix:/var/run/gunicorn.sock fail_timeout=0;
+    server 127.0.0.1:8000 fail_timeout=0;
+}
+
+upstream push_server {
+    server 127.0.0.1:8001 fail_timeout=0;
+}
+
+server {
+       listen         80;
+       server_name    secure.spriteli.org *.secure.spriteli.org;
+       return         301 https://secure.spriteli.org$request_uri;
+}
+
+server {
+        listen         443 ssl;
+        server_name    secure.spriteli.org;
+
+        ssl_session_timeout 10m;
+        keepalive_timeout 70;
+
+        ssl on;
+        ssl_certificate secure.spriteli.org.chained.crt;
+        ssl_certificate_key secure.spriteli.org.key;
+
+
+        # Max request size allowed (we only process small json documents,
+        #   increase if plan to upload media, e.g. profile pics)
+        client_max_body_size 128k;
+
+        disable_symlinks off;
+
+        location /static {
+            alias /usr/local/lib/spriteli/current/assets ;
+        }
+
+        location /media {
+            alias /var/www/spriteli/media ;
+        }
+
+        location / {
+            # checks for static file, if not found proxy to app
+            try_files $uri @proxy_to_app;
+        }
+
+        location /push {
+            proxy_pass http://push_server;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Scheme $scheme;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_pass_header Server;
+        }
+
+        location @proxy_to_app {
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_redirect off;
+
+
+            proxy_pass   http://app_server;
+        }
+
+        error_page 404 /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+                root /usr/share/nginx/html;
+        }
+}

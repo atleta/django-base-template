@@ -1,0 +1,15 @@
+---
+- hosts: all
+  remote_user: root
+  roles:
+    - role: common
+    - role: smtp
+      exim4_dc_use_split_config: 'true'
+      exim4_dc_eximconfig_configtype: 'internet'
+
+- hosts: production
+  remote_user: root
+  roles:
+    - role: production
+
+#      exim4_dkim_private_key: '/etc/exim4/dkim.live.key'

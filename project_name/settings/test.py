@@ -1,3 +1,5 @@
+from .base import *
+
 # If set to False, test db will not be migrated (but initialized using syncdb). Makes running
 #  tests faster, but may break them if tests rely on migrations. (E.g. migrations adding data.)
 SOUTH_TESTS_MIGRATE = False

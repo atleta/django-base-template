@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -z "$1" ] ; then
+    echo "Usage: fixrefs <project_name>"
+    exit 1
+fi
+
+rgrep -l --exclude-dir=env project_name | xargs -n 1 sed 's/{{\s*project_name\s*}}/'$1'/g' -i
+echo project_name refs have been fixed. You can now remove this file.

@@ -11,9 +11,9 @@ os.environ['WERKZEUG_DEBUG_PIN'] = WERKZEUG_DEBUG_PIN
 
 MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
-TEMPLATE_CONTEXT_PROCESSORS += (
-    'django.core.context_processors.debug',
-)
+TEMPLATES[0]['OPTIONS']['context_processors'] += [
+    'django.template.context_processors.debug',
+]
 
 INSTALLED_APPS += (
    'debug_toolbar',

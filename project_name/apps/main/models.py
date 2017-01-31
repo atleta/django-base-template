@@ -2,11 +2,50 @@
 (C) 2016 - Laszlo Marai <atleta@atleta.hu>
 """
 
-from django.contrib .auth.models import (AbstractBaseUser, AbstractUser, PermissionsMixin,
-    UserManager)
+from django.contrib .auth.models import (AbstractBaseUser, PermissionsMixin)
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
+
+class UserManager(BaseUserManager):
+    use_in_migrations = True
+
+    def _create_user(self, **kwargs):
+        """
+        Creates and saves a User with the given email and password.
+        """
+        if not kwargs.get(self.model.USERNAME_FIELD, None):
+            raise ValueError('The USERNAME_FIELD (%s) must be provided' % self.model.USERNAME_FIELD)
+
+        # TODO: clean this up and make generic. Why is username normalized by the model and email by the manager?
+        for k, v in kwargs.items():
+            method_name = 'normalize_%s' % k
+            normalizer = getattr(self, method_name, getattr(self.model, method_name, None))
+            if normalizer:
+                kwargs[k] = normalizer(v)
+
+        password = kwargs.pop('password')
+        user = self.model(**kwargs)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, **kwargs):
+        kwargs.setdefault('is_superuser', False)
+        return self._create_user(**kwargs)
+
+    def create_superuser(self, **kwargs):
+        kwargs.setdefault('is_superuser', True)
+        kwargs.setdefault('is_staff', True)
+
+        # What's the point?
+        if kwargs.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if kwargs.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(**kwargs)
 
 
 class User(AbstractBaseUser, PermissionsMixin):

@@ -25,3 +25,4 @@ django-admin-decorators==0.1
 
 django-redis==4.7.0
 redis==2.10.5
+celery==4.0.0

@@ -1,18 +1,27 @@
 ---
+  - name: Install prerequisits for installation                                                                                                                                                             
+    apt: name={{ item }} state=latest                                                                                                                                                                       
+    with_items:                                                                                                                                                                                             
+      - apt-transport-https                                                                                                                                                                                 
+      - ca-certificates                                                                                                                                                                                     
+      - software-properties-common                                                                                                                                                                          
   - name: install CA certificates
     apt: name=ca-certificates
   - name: add 3rd party apt repository keys
     apt_key: url='{{ item }}'
     with_items:
-      - http://nginx.org/packages/keys/nginx_signing.key
-#      - https://www.postgresql.org/media/keys/ACCC4CF8.asc
-      - http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+      - https://nginx.org/packages/keys/nginx_signing.key
+      - https://www.postgresql.org/media/keys/ACCC4CF8.asc
+      - https://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+      - https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+      - https://download.docker.com/linux/debian/gpg
   - name: add 3rd party repositories
     apt_repository: repo='{{ item }}'
     with_items:
-      - deb http://nginx.org/packages/ubuntu/ trusty nginx
-#      - deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main
-#      - deb http://www.rabbitmq.com/debian/ testing main
+      - deb http://nginx.org/packages/debian/ stretch nginx
+      - deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main
+      - deb http://www.rabbitmq.com/debian/ testing main
+      - deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
   - name: update package list and upgrade
     apt: update_cache=yes upgrade=dist
   - name: install packages
@@ -22,8 +31,9 @@
       - sudo
       - ntp
       - ntpdate
-      - mysql-server
-      - python-mysqldb
+      - python-psycopg2
+      - postgresql
+      - libpq-dev
       - python-virtualenv
       - python-pip
       - libffi-dev
@@ -31,26 +41,30 @@
       - gcc
       - git
       - python-dev
-#      - rabbitmq-server
+      - rabbitmq-server
 # Will probably be needed later
-      - redis-server
-  - name: create db
-    mysql_db: login_password='ripcurl123' name=mobovidata_www encoding='UTF8'
-    sudo: yes
+#      - redis-server
+#      - docker-ce
   - name: create db users
-    mysql_user: login_password='ripcurl123' name={{ item.name }} password={{ item.password }} priv=mobovidata_www.*:ALL
-    sudo: yes
+    postgresql_user: name={{ item.name }} password={{ item.password }} encrypted=yes role_attr_flags=NOCREATEDB,NOCREATEROLE,NOSUPERUSER
+    become: yes
+    become_user: postgres
     with_items:
-      - { name: 'django', password: 'ripcurl' }
+# NOTE: generate password when generating project (should be in sync wih settings!)
+      - { name: '{{ project_name }}', password: 'Kr230c9Nsc' }
+  - name: create db
+    postgresql_db: name={{ project_name }} owner={{ project_name }} encoding='UTF-8'
+    become: yes
+    become_user: postgres
   - name: create directories
     file: path={{ item.path }} owner={{ item.owner }} group={{ item.group }} mode={{ item.mode }} state=directory
     with_items:
-      - { path: '/var/www/mobovidata/', owner: 'www-data', group: 'www-data', mode: '775' }
-      - { path: '/var/www/mobovidata/media/', owner: 'www-data', group: 'www-data', mode: '775' }
-      - { path: '/var/log/mobovidata/', owner: 'www-data', group: 'www-data', mode: '775' }
-      - { path: '/usr/local/lib/mobovidata/', owner: 'root', group: 'root', mode: '775' }
-      - { path: '/var/lib/mobovidata/celery', owner: 'nobody', group: 'nogroup', mode: '755' }
-      - { path: '/var/run/mobovidata/celery', owner: 'nobody', group: 'nogroup', mode: '755' }
+      - { path: '/var/www/{{ project_name }}/', owner: 'www-data', group: 'www-data', mode: '775' }
+      - { path: '/var/www/{{ project_name }}/media/', owner: 'www-data', group: 'www-data', mode: '775' }
+      - { path: '/var/log/{{ project_name }}/', owner: 'www-data', group: 'www-data', mode: '775' }
+      - { path: '/usr/local/lib/{{ project_name }}/', owner: 'root', group: 'root', mode: '775' }
+      - { path: '/var/lib/{{ project_name }}/celery', owner: 'nobody', group: 'nogroup', mode: '755' }
+      - { path: '/var/run/{{ project_name }}/celery', owner: 'nobody', group: 'nogroup', mode: '755' }
   - name: upload config
     synchronize: dest={{ item.dest }} src={{ item.src }} owner=no group=no recursive=yes delete=yes
     with_items:
@@ -59,15 +73,4 @@
     notify:
     - restart nginx
     - restart supervisor
-  - name: upload key
-    synchronize: dest={{ item.dest }} src={{ item.src }} owner=no group=no recursive=yes delete=yes
-    with_items:
-      - { dest: '/root/.ssh/', src: 'bitbucket' }
-      - { dest: '/root/.ssh/', src: 'bitbucket.pub' }
 
-  - name: clone repo
-    git: repo='git@bitbucket.org:wirelessemporium/mobovidata.git' dest='/usr/local/lib/mobovidata/' clone=yes accept_hostkey=yes key_file=/root/.ssh/bitbucket
-
-# Need to create an SSH key that we add into the 'provision/roles/common/files'. Then copy that ssh to the root user's
-# directory using the upload config task above. Then add the keyfile to the bitbucket repo, and the
-# keyfile parameter in the git command above. In bitbucket, just give this key read access only.

@@ -2,25 +2,26 @@
 -r base.txt
 
 piprot
-django-debug-toolbar==1.6
-django-extensions==1.7.5
+pipdeptree
+django-debug-toolbar==1.9.1
+django-extensions==1.9.8
 ipython
 #Markdown==2.6.6
-pip-tools==1.8.0
-Werkzeug==0.11.15
-certifi==2016.9.26
+pip-tools==1.11.0
+Werkzeug==0.13
+certifi==2017.11.5
 ecdsa==0.13
-Fabric==1.13.1
-paramiko==2.1.1
+Fabric==1.14.0
+paramiko==2.4.0
 pycrypto==2.6.1
 formic==0.9beta8
 # Needed during build/deployment
-Jinja2==2.8.1
-coloredlogs==5.2
-django-nose==1.4.4
+Jinja2==2.10
+coloredlogs==7.3.1
+django-nose==1.4.5
 nose==1.3.7
-factory_boy==2.8.1
-sure==1.4.0
+factory_boy==2.9.2
+sure==1.4.7
 mock==2.0.0
-nose-parameterized==0.5.0
+nose-parameterized==0.6.0
 yanc

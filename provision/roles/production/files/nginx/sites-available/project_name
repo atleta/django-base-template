@@ -18,20 +18,20 @@ upstream push_server {
 
 server {
        listen         80;
-       server_name    secure.spriteli.org *.secure.spriteli.org;
-       return         301 https://secure.spriteli.org$request_uri;
+       server_name    secure.{{ project_name }} *.secure.{{ project_name }};
+       return         301 https://secure.{{ project_name }}$request_uri;
 }
 
 server {
         listen         443 ssl;
-        server_name    secure.spriteli.org;
+        server_name    secure.{{ project_name }}.org;
 
         ssl_session_timeout 10m;
         keepalive_timeout 70;
 
         ssl on;
-        ssl_certificate secure.spriteli.org.chained.crt;
-        ssl_certificate_key secure.spriteli.org.key;
+        ssl_certificate secure.{{ project_name }}.chained.crt;
+        ssl_certificate_key secure.{{ project_name }}.key;
 
 
         # Max request size allowed (we only process small json documents,
@@ -41,11 +41,11 @@ server {
         disable_symlinks off;
 
         location /static {
-            alias /usr/local/lib/spriteli/current/assets ;
+            alias /usr/local/lib/{{ project_name }}/current/assets ;
         }
 
         location /media {
-            alias /var/www/spriteli/media ;
+            alias /var/www/{{ project_name }}/media ;
         }
 
         location / {

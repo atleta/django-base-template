@@ -15,7 +15,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 import sys
 
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 # TODO: move this into a separate file, probably in libs
 def _apply(fn,x,times,):
@@ -163,7 +163,7 @@ INSTALLED_APPS = (
 )
 ########## END APP CONFIGURATION
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

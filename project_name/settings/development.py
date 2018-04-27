@@ -9,7 +9,7 @@ WERKZEUG_DEBUG_PIN = 'off'
 
 os.environ['WERKZEUG_DEBUG_PIN'] = WERKZEUG_DEBUG_PIN
 
-MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
 TEMPLATES[0]['OPTIONS']['context_processors'] += [
     'django.template.context_processors.debug',

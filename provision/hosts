@@ -1,7 +1,7 @@
 ansible_python_interpreter=/usr/bin/python2
 
 #[production]
-#secure.spriteli.org
+#secure.{{project_name}}
 
 [staging]
-staging.mobovidata.com
+staging.{{project_name}}

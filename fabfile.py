@@ -54,7 +54,7 @@ def config_for_target(target):
 def configure(func,target_param=DEFAULT_TARGET_PARAM):
     # TODO: (when making a lib) could be imported from six as well
     def decorator(*args, **kwargs):
-        if env.has_key('target_env'):
+        if 'target_env' in env:
             execute(func, *args, **kwargs)
         else:
             target = kwargs.pop(target_param)
@@ -118,6 +118,7 @@ class FileMapping(object):
     __NAME_RX = r'[a-z][-a-z0-9]*'
     ENTRY_PARSER_RX = re.compile(r'\s*(?P<source>[^ ]+)\s+(?P<type>[\-~=])>\s+(?P<dest>[^ ]+)'
         '(?:\s+(?P<mode>[0-7]{{4}})(?:,(?P<owner>{name_rx})?(?:\.(?P<group>{name_rx}))?)?)?\s*$'
+#        '(?:\s+(?P<mode>[0-7]4)(?:,(?P<owner>{name_rx})?(?:\.(?P<group>{name_rx}))?)?)?\s*$'
                                  .format(name_rx = __NAME_RX))
 
     def __init__(self, mapping_file):
@@ -294,22 +295,46 @@ def deploy():
                 run('virtualenv env')
 
                 # NOTE: Temporary solution: install through running pip remotely
-                run('env/bin/pip install -r requirements/%s.txt' % env.requirements)
+                run('env/bin/pip install pip-accel')
+                run('env/bin/pip-accel install -r requirements/%s.txt' % env.requirements)
+
+                with show():
+                  run('env/bin/python manage migrate')
+
                 # NOTE: take it from the settings...
                 run('mkdir assets')
                 # NOTE: can also be run locally
                 run('env/bin/python manage collectstatic -v 0 -l --noinput -c')
 
-            run('env/bin/python manage migrate')
 
         with settings(warn_only=True):
-            result =  run('supervisorctl status | grep "%s\s\+RUNNING"' % env.service_name)
+            result =  run('supervisorctl status | grep "%s.*RUNNING\s\+pid"' % env.service_name)
 
         if not result.failed:
             run('supervisorctl stop %s' % env.service_name)
 
         run('ln -sfn %s current' % timestamp)
         run('supervisorctl start %s' % env.service_name)
+
+#        slack = Slacker("slack key here...")
+#        hosts = ','.join(h.split('@')[1] for h in env.hosts)
+#        all_logs = local('git log %s..%s' % (old_version, version), capture=True).stdout.strip()
+#        merge_logs = local('git log --merges %s..%s' % (old_version, version), capture=True).stdout.strip()
+#        slack.chat.post_message(
+#            'backend', "A new version of the backend has been deployed to %s.\n  commit id: %s" % (hosts, version),
+#            attachments=[
+#                {
+#                    'title': 'Merged branches',
+#                    'color': 'warning',
+#                    'text': merge_logs
+#                },
+#                {
+#                    'title': 'All commits',
+#                    'text': all_logs
+#                }
+#            ]
+#        )
+
 
 
 @configure

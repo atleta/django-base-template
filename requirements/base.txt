@@ -1,28 +1,26 @@
 # Common base requirements shared by all environments
 
-psycopg2==2.6.2
-bcrypt==3.1.2
-django-compressor==2.1
-django-model-utils==2.6
-django-forms-bootstrap==3.0.1
-Django==1.10.4
+psycopg2==2.7.3.2
+bcrypt==3.1.4
+
+# ??? do we need it with webpack?
+django-compressor==2.2
+django-model-utils==3.0.0
+django-forms-bootstrap==3.1.0
+Django==2.0
 pytz
-raven==5.32.0
+raven==6.4.0
 django-jsonify==0.3.0
 
 django-settings-context-processor==0.2
 django-admin-decorators==0.1
-
-# blanc pages:
-#django-mptt==0.6.1
-#django-mptt-admin==0.2.0
-#blanc-basic-pages==0.3.2
-#django-reversion==1.8.5
+django-webpack-loader==0.5.0
 
 # Django REST framework
 #djangorestframework==2.4.3
 #drf-extensions==0.2.6
 
-django-redis==4.7.0
-redis==2.10.5
-celery==4.0.0
+django-redis==4.8.0
+redis==2.10.6
+celery==4.2.0
+django-celery==3.2.2

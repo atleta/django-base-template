@@ -1,0 +1,6 @@
+base_url=http://localhost:801X
+
+. ./00_local_settings
+
+auth_file="./.auth_token"
+auth=(-H "Authorization: Token `cat $auth_file`")

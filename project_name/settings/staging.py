@@ -7,3 +7,9 @@ from .deployment import *
 #  to the production as possible.
 
 ALLOWED_HOSTS = []
+
+SITE_ID = 2
+SITE_CONFIG = {
+    'name': 'staging',
+    'domain': ''
+}

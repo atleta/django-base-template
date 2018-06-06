@@ -25,6 +25,12 @@ DATABASES = {
     }
 }
 
+SITE_ID = 1
+SITE_CONFIG = {
+    'name': '',
+    'domain': ''
+}
+
 RAVEN_CONFIG = {
     # Use "?verify_ssl=0" at the end of the url if you don't have a valid certificate
     'dsn': 'https://',

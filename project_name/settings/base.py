@@ -140,7 +140,16 @@ INSTALLED_APPS = (
     # Maybe needed for deployment only?
     'compressor',
     'django_forms_bootstrap',
+
 #    'rest_framework',
+#    'rest_framework.authtoken',
+
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+#    'rest_auth',
+    # 'rest_auth.registration',
+
     'jsonify',
     'raven.contrib.django.raven_compat',
     'settings_context_processor',

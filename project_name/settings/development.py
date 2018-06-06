@@ -68,8 +68,13 @@ DEBUG_TOOLBAR_CONFIG = {
 #    'dsn': 'https://..../?verify_ssl=0',
 #}
 
-# TODO: FILL!
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+SITE_ID = 3
+SITE_CONFIG = {
+    'name': 'development',
+    'domain': ''
+}
 
 try:
     from .local import *

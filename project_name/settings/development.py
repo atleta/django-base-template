@@ -76,6 +76,8 @@ SITE_CONFIG = {
     'domain': ''
 }
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 try:
     from .local import *
 except ImportError:

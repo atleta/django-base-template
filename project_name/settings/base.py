@@ -153,6 +153,7 @@ INSTALLED_APPS = (
     'jsonify',
     'raven.contrib.django.raven_compat',
     'settings_context_processor',
+#    'corsheaders',
 
     # blanc-basic-pages
     #'mptt',
@@ -174,8 +175,10 @@ INSTALLED_APPS = (
 
 MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    # 'corsheaders.middleware.CorsPostCsrfMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     # 'cached_auth.Middleware',
     'django.contrib.messages.middleware.MessageMiddleware',

@@ -1,7 +1,10 @@
 """ Default urlconf for {{ project_name }} """
 
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views import static
+
 admin.autodiscover()
 
 #import {{ project_name}}.apps.main.urls
@@ -20,3 +23,9 @@ urlpatterns = [
     url(r'^bad/$', bad),
 ]
 
+if settings.DEBUG:
+    urlpatterns += [
+        url(r'^media/(?P<path>.*)$', static.serve, {
+            'document_root': settings.MEDIA_ROOT,
+        }),
+    ]

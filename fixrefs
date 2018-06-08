@@ -6,4 +6,5 @@ if [ -z "$1" ] ; then
 fi
 
 rgrep -l --exclude-dir=env project_name | xargs -n 1 sed 's/{{\s*project_name\s*}}/'$1'/g' -i
+#find . -name *project_name* | xargs -n1 -iXXX bash -c "mv XXX \$(echo XXX | sed 's/project_name/'\$1'/g')"
 echo project_name refs have been fixed. You can now remove this file.

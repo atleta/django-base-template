@@ -18,11 +18,11 @@ server {
     disable_symlinks off;
 
     location /backend/static {
-        alias /usr/local/lib/heartface/current/assets ;
+        alias /usr/local/lib/{{project_name}}/current/assets ;
     }
 
     location /media {
-        alias /var/www/heartface/media ;
+        alias /var/www/{{project_name}}/media ;
     }
 
     location / {
@@ -30,7 +30,7 @@ server {
         #    client_max_body_size 15M;
         #    proxy_pass @proxy_to_app/admin # ????
         #}
-        root /var/www/heartface ;
+        root /var/www/{{project_name}} ;
         index index.html ;
         # checks for static file, if not found proxy to app
         try_files $uri $uri/ @proxy_to_app;
@@ -45,11 +45,11 @@ server {
         proxy_redirect off;
 
 
-        proxy_pass   http://app_server_heartface;
+        proxy_pass   http://app_server_{{project_name}};
     }
 
    location /.well-known {
-       root /var/www/heartface ;
+       root /var/www/{{project_name}} ;
    }
 
     error_page 404 /404.html;

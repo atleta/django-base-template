@@ -80,6 +80,7 @@
     with_items:
       - { src: 'nginx/sites-available/{{project_name}}.j2', dest: '/etc/nginx/sites-available/{{project_name}}' }
       - { src: 'nginx/sites-available/secure.{{project_name}}.j2', dest: '/etc/nginx/sites-available/secure.{{project_name}}' }
+    file: path=/etc/nginx/sites-enabled/{{project_name}} src=/etc/nginx/sites-available/{{project_name}} state=link
     notify:
         - restart nginx
 # Have to restart nginx here explicitly before we can obtain an SSL cert

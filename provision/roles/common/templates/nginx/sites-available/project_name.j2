@@ -1,4 +1,4 @@
-upstream app_server_heartface {
+upstream app_server_{{project_name}} {
     # Optionally use unix domain sockets (need to set up gunicorn!)
     # server unix:/var/run/gunicorn.sock fail_timeout=0;
     server 127.0.0.1:8000 fail_timeout=0;
@@ -12,7 +12,7 @@ server {
     keepalive_timeout 70;
 
     location /.well-known {
-	root /var/www/heartface ;
+	root /var/www/{{project_name}} ;
     }
 
     location / {

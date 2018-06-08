@@ -1,0 +1,21 @@
+upstream app_server_heartface {
+    # Optionally use unix domain sockets (need to set up gunicorn!)
+    # server unix:/var/run/gunicorn.sock fail_timeout=0;
+    server 127.0.0.1:8000 fail_timeout=0;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{ domain_name }} {% if domain_list is defined %}{{ domain_list | join(" ") }} {% endif %};
+    keepalive_timeout 70;
+
+    location /.well-known {
+	root /var/www/heartface ;
+    }
+
+    location / {
+           return         301 https://{{ domain_name }}$request_uri;
+       }
+}

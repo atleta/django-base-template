@@ -1,12 +1,10 @@
 ---
-  - name: Install prerequisits for installation                                                                                                                                                             
-    apt: name={{ item }} state=latest                                                                                                                                                                       
-    with_items:                                                                                                                                                                                             
-      - apt-transport-https                                                                                                                                                                                 
-      - ca-certificates                                                                                                                                                                                     
-      - software-properties-common                                                                                                                                                                          
-  - name: install CA certificates
-    apt: name=ca-certificates
+  - name: Install prerequisits for installation
+    apt: name={{ item }} state=latest
+    with_items:
+      - apt-transport-https
+      - ca-certificates
+      - software-properties-common
   - name: add 3rd party apt repository keys
     apt_key: url='{{ item }}'
     with_items:
@@ -28,9 +26,13 @@
     apt: name={{ item }} state=latest
     with_items:
       - nginx
+      - certbot
       - sudo
       - ntp
       - ntpdate
+      - python3.5
+      - python3.5-dev
+      - libpython3.5-dev
       - python-psycopg2
       - postgresql
       - libpq-dev
@@ -40,11 +42,11 @@
       - supervisor
       - gcc
       - git
-      - python-dev
       - rabbitmq-server
 # Will probably be needed later
 #      - redis-server
 #      - docker-ce
+#      - docker-compose
   - name: create db users
     postgresql_user: name={{ item.name }} password={{ item.password }} encrypted=yes role_attr_flags=NOCREATEDB,NOCREATEROLE,NOSUPERUSER
     become: yes
@@ -61,6 +63,7 @@
     with_items:
       - { path: '/var/www/{{ project_name }}/', owner: 'www-data', group: 'www-data', mode: '775' }
       - { path: '/var/www/{{ project_name }}/media/', owner: 'www-data', group: 'www-data', mode: '775' }
+      - { path: '/var/www/{{ project_name }}/.well-known/', owner: 'root', group: 'root', mode: '755' }
       - { path: '/var/log/{{ project_name }}/', owner: 'www-data', group: 'www-data', mode: '775' }
       - { path: '/usr/local/lib/{{ project_name }}/', owner: 'root', group: 'root', mode: '775' }
       - { path: '/var/lib/{{ project_name }}/celery', owner: 'nobody', group: 'nogroup', mode: '755' }
@@ -71,6 +74,27 @@
       - { dest: '/etc/nginx/', src: 'nginx/' }
       - { dest: '/etc/supervisor/conf.d/', src: 'supervisor/' }
     notify:
-    - restart nginx
     - restart supervisor
-
+  - name: deploy nginx config
+    template: src={{ item.src }} dest={{ item.dest }}
+    with_items:
+      - { src: 'nginx/sites-available/{{project_name}}.j2', dest: '/etc/nginx/sites-available/{{project_name}}' }
+      - { src: 'nginx/sites-available/secure.{{project_name}}.j2', dest: '/etc/nginx/sites-available/secure.{{project_name}}' }
+    notify:
+        - restart nginx
+# Have to restart nginx here explicitly before we can obtain an SSL cert
+  - name: restart nginx
+    service: name=nginx state=restarted
+  - name: generate SSL certificate with Let's encrypt certbot
+    shell: certbot certonly --cert-name {{ domain_name }} -n --webroot -w /var/www/{{project_name}}/ -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }} {% if domain_list is defined and domain_list %} -d {{ domain_list | join(",") }} {% endif %}
+    args:
+      creates: /etc/letsencrypt/{{ domain_name }}
+  - name: Link/activate https web server config
+    file: path=/etc/nginx/sites-enabled/secure.{{project_name}} src=/etc/nginx/sites-available/secure.{{project_name}} state=link
+    notify:
+    - restart nginx
+  - name: Add cron job to auto-renew SSL certificate
+    cron:
+      name: letsencrypt
+      special_time: weekly
+      job: /usr/bin/certbot renew && /usr/sbin/service nginx reload

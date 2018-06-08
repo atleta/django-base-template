@@ -1,7 +1,7 @@
 ansible_python_interpreter=/usr/bin/python2
 
 #[production]
-#secure.{{project_name}}
+#secure.{{project_name}} letsencrypt_email=admin@{{project_name}} domain_name={{project_name}} domain_list='["www.{{project__name}}", "secure.{{project_name}}"]'
 
 [staging]
-staging.{{project_name}}
+dev.{{project_name}} letsencrypt_email=admin@{{project_name}} domain_name=dev.{{project_name}}

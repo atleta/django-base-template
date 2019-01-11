@@ -31,6 +31,8 @@ SITE_CONFIG = {
     'domain': ''
 }
 
+STATIC_URL = '/backend/static/'
+
 RAVEN_CONFIG = {
     # Use "?verify_ssl=0" at the end of the url if you don't have a valid certificate
     'dsn': 'https://',

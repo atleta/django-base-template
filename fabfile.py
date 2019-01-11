@@ -127,8 +127,9 @@ class FileMapping(object):
         'file-like' object having a readlines() method.)
         @type mapping_file: basestring|file
         """
-        if isinstance(mapping_file, basestring):
-            with open(mapping_file) as f:
+        # Use six string type instead (or check for file or assume filename and that's it)?
+        if isinstance(mapping_file, str):
+            with open('w+', mapping_file) as f:
                 self.__parse(f)
         else:
             self.__parse(mapping_file)
@@ -315,6 +316,9 @@ def deploy():
 
         run('ln -sfn %s current' % timestamp)
         run('supervisorctl start %s' % env.service_name)
+
+        with settings(warn_only=True):
+            local('/usr/bin/notify-send -u critical Deployed')
 
 #        slack = Slacker("slack key here...")
 #        hosts = ','.join(h.split('@')[1] for h in env.hosts)

@@ -1,2 +1,6 @@
 Create 'main' app (with views, etc)
 add https://github.com/mfogel/django-settings-context-processor
+
+* Extend fabric file to check during deployment:
+  * sentry dsn is valid
+  * deployment host is added to ALLOWED_HOSTS (and maybe also SITE_CONFIG)

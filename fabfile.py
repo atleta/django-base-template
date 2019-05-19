@@ -281,6 +281,8 @@ def build(patch=False):
 def deploy():
     timestamp = datetime.datetime.utcnow().strftime(env.timestamp_format)
     version = local('git rev-parse HEAD', capture=True).stdout.strip()
+    version_timestamp = local('git log -1 --pretty=format:%ct', capture=True).stdout.strip()
+
     run('mkdir -p %s' % env.dest)
     with cd(env.dest):
         run('mkdir %s' % timestamp)
@@ -291,6 +293,8 @@ def deploy():
             put('build/deploy.tar.gz', remote_archive)
             # TODO: remove --no-same-owner when built with fakeroot
             run('tar xfz %s --no-same-owner' % remote_archive)
+            run('rm %s' % remote_archive)
+            run('echo %s %s > VERSION' % (version, version_timestamp))
 
             with hide('stdout'):
                 run('virtualenv env')

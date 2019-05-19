@@ -1,5 +1,7 @@
 from .base import *
 
+import datetime
+
 #ALLOWED_HOSTS += ['']
 
 MINIFIED_JS = True
@@ -32,6 +34,13 @@ SITE_CONFIG = {
 }
 
 STATIC_URL = '/backend/static/'
+
+with open(os.path.join(PROJECT_ROOT, 'VERSION')) as f:
+    GIT_REVISION, GIT_TIMESTAMP = f.readline().strip().split()
+
+VERSION = GIT_REVISION
+VERSION_TIMESTAMP = datetime.datetime.fromtimestamp(int(GIT_TIMESTAMP)) if GIT_TIMESTAMP else datetime.datetime.utcnow()
+DEPLOYMENT_NAME = 'production'
 
 RAVEN_CONFIG = {
     # Use "?verify_ssl=0" at the end of the url if you don't have a valid certificate

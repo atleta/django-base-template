@@ -11,6 +11,16 @@ os.environ['WERKZEUG_DEBUG_PIN'] = WERKZEUG_DEBUG_PIN
 
 MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
+try:
+    with os.popen('git rev-parse --abbrev-ref HEAD') as f:
+        VERSION = '[branch: %s]' % f.readline().strip()
+    with os.popen('git log -1 --pretty=format:%ct') as f:
+        VERSION_TIMESTAMP = datetime.datetime.fromtimestamp(int(f.readline().strip()), timezone.utc)
+except:
+    print('Failed to read version info from git')
+
+DEPLOYMENT_NAME = 'development'
+
 TEMPLATES[0]['OPTIONS']['context_processors'] += [
     'django.template.context_processors.debug',
 ]

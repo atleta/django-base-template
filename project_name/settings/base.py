@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import datetime
 import os
 import sys
 
@@ -38,6 +39,10 @@ SECRET_KEY = r'{{ secret_key }}'
 DEBUG = False
 
 TEMPLATE_DEBUG = DEBUG
+
+VERSION = '?'
+VERSION_TIMESTAMP = datetime.datetime.utcnow()
+DEPLOYMENT_NAME = '?'
 
 # Recipients of traceback emails and other notifications.
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins

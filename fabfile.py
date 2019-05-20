@@ -280,7 +280,7 @@ def build(patch=False):
 @task
 def deploy():
     timestamp = datetime.datetime.utcnow().strftime(env.timestamp_format)
-    version = local('git rev-parse HEAD', capture=True).stdout.strip()
+    version = local('git rev-parse --short HEAD', capture=True).stdout.strip()
     version_timestamp = local('git log -1 --pretty=format:%ct', capture=True).stdout.strip()
 
     run('mkdir -p %s' % env.dest)

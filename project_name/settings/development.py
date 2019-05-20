@@ -15,9 +15,10 @@ try:
     with os.popen('git rev-parse --abbrev-ref HEAD') as f:
         VERSION = '[branch: %s]' % f.readline().strip()
     with os.popen('git log -1 --pretty=format:%ct') as f:
-        VERSION_TIMESTAMP = datetime.datetime.fromtimestamp(int(f.readline().strip()), timezone.utc)
+        VERSION_TIMESTAMP = datetime.datetime.fromtimestamp(int(f.readline().strip()), datetime.timezone.utc)
 except:
-    print('Failed to read version info from git')
+#    print('Failed to read version info from git')
+    pass
 
 DEPLOYMENT_NAME = 'development'
 

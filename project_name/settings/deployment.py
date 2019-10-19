@@ -27,6 +27,10 @@ DATABASES = {
     }
 }
 
+
+ADMIN_LABEL_BACKGROUND = 'red'
+ADMIN_LABEL_COLOR = 'white'
+
 SITE_ID = 1
 SITE_CONFIG = {
     'name': '',

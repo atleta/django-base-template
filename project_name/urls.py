@@ -13,9 +13,13 @@ def bad(request):
     """ Simulates a server error """
     1 / 0
 
-SITE_HEADER = '{{ project_name }} %s (revision %s @ %s)' % (settings.DEPLOYMENT_NAME, settings.VERSION, settings.VERSION_TIMESTAMP.isoformat())
-admin.site.site_header = SITE_HEADER
-setattr(settings, 'GRAPPELLI_ADMIN_TITLE', SITE_HEADER)
+SITE_HEADER = 'WebAssess <span style="background: {bgcolor}; color: {color}">{deployment}</span> [revision {version} @ {timestamp}]'.format(
+    bgcolor=settings.ADMIN_LABEL_BACKGROUND,
+    color=settings.ADMIN_LABEL_COLOR,
+    deployment=settings.DEPLOYMENT_NAME,
+    version=settings.VERSION,
+    timestamp=settings.VERSION_TIMESTAMP.isoformat()
+)
 
 urlpatterns = [
     # Examples:

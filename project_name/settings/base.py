@@ -356,7 +356,12 @@ PAGE_TEMPLATES = (
 
 TEMPLATE_VISIBLE_SETTINGS = (
     'STATIC_URL',
+    'DEPLOYMENT_NAME',
+    'ADMIN_HEADER_BACKGROUND',
 )
+
+ADMIN_HEADER_BACKGROUND = None
+# GRAPPELLI_INDEX_DASHBOARD = '{{ project_name }}.dashboard.AdminDashboard'
 
 ########## {{ project_name|upper }} SPECIFIC SETTINGS
 

@@ -81,6 +81,10 @@ DEBUG_TOOLBAR_CONFIG = {
 
 ALLOWED_HOSTS = ['*']
 
+#ADMIN_HEADER_BACKGROUND = 'linear-gradient(#307d0e, #2e680e)'
+ADMIN_LABEL_BACKGROUND = '#307d0e'
+ADMIN_LABEL_COLOR = 'white'
+
 SITE_ID = 3
 SITE_CONFIG = {
     'name': 'development',

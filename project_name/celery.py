@@ -3,10 +3,29 @@
 
 from __future__ import absolute_import, unicode_literals
 import os
-from celery import Celery
+import celery
+import raven
+from raven.contrib.celery import register_logger_signal, register_signal
+
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', '{{ project_name }}.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'webassess.settings')
+
+
+class Celery(celery.Celery):
+
+    def on_configure(self):
+        from django.conf import settings
+        dsn = getattr(settings, 'RAVEN_CONFIG', {}).get('dsn')
+        if dsn:
+            client = raven.Client(dsn)
+
+            # register a custom filter to filter out duplicate logs
+            register_logger_signal(client)
+
+            # hook into the Celery error handler
+            register_signal(client)
+
 
 app = Celery('{{ project_name }}')
 

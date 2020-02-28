@@ -31,6 +31,7 @@ Project structure
 Directory layout
 ----------------
 
+```
 env - python virtualenv directory *not* checked into the VCS
         (version control system, e.g. git or hg). You need
         to create it on first checkout and keep it updated
@@ -66,7 +67,7 @@ fabfile.py - deployment script (see deployment instructions below)
 requirements.txt - root requirements file for deployment PaaS targets
                      that may need it (e.g. Heroku). It simply includes
                      requirements/deployment.txt .
-
+```
 
 Runtime environments & settings & requirements
 ----------------------------------------------

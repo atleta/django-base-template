@@ -4,3 +4,4 @@ add https://github.com/mfogel/django-settings-context-processor
 * Extend fabric file to check during deployment:
   * sentry dsn is valid
   * deployment host is added to ALLOWED_HOSTS (and maybe also SITE_CONFIG)
+* Add mypy: https://github.com/typeddjango/django-stubs , https://www.ralphminderhoud.com/blog/django-mypy-check-runs/

@@ -217,6 +217,7 @@ Where xxx.xxx.xxx.xxx is the IP (or the FQDN) of the target machine
 
 Without going into the details here's a short explanation for most of the files
 used in the provisioning process:
+
 + hosts - the inventory file containing the hosts we want to provision to.
     Hosts can have different roles (separate db, web server, etc.). This
     simple setup doesn't use this feature.
